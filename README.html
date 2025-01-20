@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing and Flashing Lights</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+            color: white;
+            text-align: center;
+            margin-top: 20%;
+            font-size: 2rem;
+            transition: background-color 0.5s;
+        }
+
+        #text {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 2px solid white;
+            width: 0;
+            animation: typing 1s steps(10) forwards, blink 0.6s step-end infinite alternate;
+        }
+
+        @keyframes blink {
+            50% {
+                border-color: transparent;
+            }
+        }
+
+        @keyframes typing {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="text"></div>
+
+    <script>
+        const phrases = ["Hello!", "Bye", "Thanks", "Ga"];
+        const textElement = document.getElementById("text");
+        let index = 0;
+
+        function typePhrase(phrase, callback) {
+            let i = 0;
+            const interval = setInterval(() => {
+                textElement.textContent = phrase.slice(0, i + 1);
+                i++;
+                if (i === phrase.length) {
+                    clearInterval(interval);
+                    setTimeout(() => erasePhrase(callback), 1000); // Pause before erasing
+                }
+            }, 100);
+        }
+
+        function erasePhrase(callback) {
+            let i = textElement.textContent.length;
+            const interval = setInterval(() => {
+                textElement.textContent = textElement.textContent.slice(0, i - 1);
+                i--;
+                if (i === 0) {
+                    clearInterval(interval);
+                    setTimeout(callback, 500); // Pause before typing next phrase
+                }
+            }, 50);
+        }
+
+        function startTyping() {
+            if (index < phrases.length) {
+                typePhrase(phrases[index], () => {
+                    index++;
+                    startTyping();
+                });
+            } else {
+                startFlashingLights();
+            }
+        }
+
+        function startFlashingLights() {
+            setInterval(() => {
+                const randomColor = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
+                document.body.style.backgroundColor = randomColor;
+            }, 300);
+        }
+
+        startTyping();
+    </script>
+</body>
+</html>
